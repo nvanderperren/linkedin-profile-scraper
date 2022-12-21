@@ -25,8 +25,6 @@ const {
 const {
   setup,
   getData,
-  getAllExperiences,
-  getAllSkills
 } = require("./scraper/methods");
 
 console.log(`Server setup: Setting up...`);
@@ -65,32 +63,14 @@ console.log(`Server setup: Setting up...`);
         // We should send an event to the worker process and wait for an update
         // So this server can handle more concurrent connections
 
-        let allExperiences = null;
-        let allEducations = null;
-        let allSkills = null;
-
-        const { urlExperiences, urlEducations, urlSkills, ...remainingData } = await getData(
+        const {...remainingData } = await getData(
           page,
           urlToScrape
         );
 
-        if(urlExperiences){
-          allExperiences = await getAllExperiences('experience',page, urlExperiences);
-        }
-
-        if(urlEducations){
-          allEducations = await getAllExperiences('education',page, urlEducations);
-        }
-
-        if(urlSkills){
-          allSkills = await getAllSkills(page, urlSkills);
-        }
 
         res.json({
-          ...remainingData,
-          experiences: urlExperiences ? allExperiences : remainingData.experiences,
-          education: urlEducations ? allEducations : remainingData.education,
-          skills: urlSkills ? allSkills : remainingData.skills
+          ...remainingData
         });
       } else {
         res.json({
